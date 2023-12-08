@@ -7,23 +7,35 @@ import (
 )
 
 // generate prime bigInt number
-func GenerateBigPrime(print bool) *big.Int {
-	x := big.Int{}
+func GenerateBigSafePrime(print bool) (*big.Int, *big.Int) {
+	p := big.NewInt(0)
+	p_minus_1_div_2 := big.NewInt(0)
 	for {
 		randomset, bitsize := MakeRandom("params")
 
-		x.SetBytes(randomset)
-		res := x.ProbablyPrime(10)
+		p.SetBytes(randomset)
+		res := p.ProbablyPrime(10)
 
 		if res {
-			if print {
-				fmt.Printf("Random %d bits number\n", bitsize)
-				fmt.Println(x.Text(16))
+			// (p - 1)
+			p_minus_1_div_2.Sub(p, big.NewInt(1))
+			// (p−1)/2
+			p_minus_1_div_2.Div(p_minus_1_div_2, big.NewInt(2))
+
+			res := p_minus_1_div_2.ProbablyPrime(10)
+			if res {
+				if print {
+					fmt.Printf("Random %d bits number\n", bitsize)
+					fmt.Println(p.Text(16))
+					fmt.Println("----------------------------------------------------------------------------------------")
+					fmt.Println(p_minus_1_div_2.Text(16))
+				}
+				break
 			}
-			break
 		}
 	}
-	return &x
+
+	return p, p_minus_1_div_2
 }
 
 // generate random (fips140 random) number [2048, 4096] bit length
