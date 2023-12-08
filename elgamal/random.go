@@ -6,6 +6,26 @@ import (
 	"math/rand"
 )
 
+// generate k that in [1, p-1]
+func PrivateGenerator() *big.Int {
+	p_sub_1 := Params().p_sub_1 // p-1 from the params
+
+	private := big.NewInt(0)
+
+	for {
+		rand, _ := MakeRandom("gen")
+		private.SetBytes(rand)
+
+		// check if private < p-1
+		is_valid := p_sub_1.Cmp(private) == 1
+		if is_valid {
+			break
+		}
+	}
+
+	return private
+}
+
 // generate prime bigInt number
 func GenerateBigSafePrime(print bool) (*big.Int, *big.Int) {
 	p := big.NewInt(0)
@@ -47,6 +67,12 @@ func MakeRandom(mode string) ([]byte, int) {
 		max := 4096
 
 		bitLength = rand.Intn(max-min) + min // range is min to max
+
+	} else if mode == "gen" { // generate random in interval [1, p-1] bits
+		min := 1
+		max := Params().bitSize - 1
+
+		bitLength = rand.Intn(max-min) + min // amount of bits in number
 	}
 
 	var rand_set []byte
