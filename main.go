@@ -3,13 +3,22 @@ package main
 import (
 	"elgamal/elgamal"
 	"fmt"
-	"math/big"
 )
 
 func main() {
+	message := "Modern programming langugages are fast"
+	signature, keypair := elgamal.UnstableSignature(message)
 
-	x := big.Int{}
-	x.SetBytes(elgamal.MakeRandom("params"))
+	fmt.Println(signature.Verify([]byte(message), keypair.GetPublic()))
 
-	fmt.Println(x.Text(10))
+	// pair := elgamal.KeyPair{}
+	// pair.GenerateKeyPair()
+
+	// message := "Modern programming langugage are fast"
+
+	// signature := elgamal.Signature{}
+	// signature.Sign([]byte(message), pair.GetPrivate())
+
+	// isSignatureValid := signature.Verify([]byte(message), pair.GetPublic())
+	// fmt.Println(isSignatureValid)
 }
