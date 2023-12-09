@@ -16,9 +16,18 @@ func PrivateGenerator() *big.Int {
 		rand, _ := MakeRandom("gen")
 		private.SetBytes(rand)
 
-		// check if private < p-1
-		is_valid := p_sub_1.Cmp(private) == 1
-		if is_valid {
+		// check if greater common divisor (GCP) is same
+		gcd := big.NewInt(0)
+		gcd.GCD(nil, nil, p_sub_1, private)
+		is_valid := gcd.Cmp(big.NewInt(1)) == 0
+
+		// check if random  < p-1
+		greater := p_sub_1.Cmp(private) == 1
+
+		if is_valid && greater {
+			// fmt.Println("----------------------PRIVATE----------------------------------")
+			// fmt.Println(private.BitLen())
+			// fmt.Println("--------------------------------------------------------")
 			break
 		}
 	}
