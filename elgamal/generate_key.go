@@ -10,13 +10,17 @@ type KeyPair struct {
 }
 
 func (pair *KeyPair) GenerateKeyPair() {
-	a := PrivateGenerator() // random in [1, p-1]
+	a := PrivateGenerator() // random in [1, p-1] | NUMBER HAS TO BE COPRIME WITH P-1 !
 
 	b := big.NewInt(0)
 	b.Exp(Params().g, a, Params().p) // g^a mod p
 
 	pair.private = a
 	pair.public = b
+}
+
+func (pair *KeyPair) GetPrivate() *big.Int {
+	return pair.private
 }
 
 func (pair *KeyPair) GetPublic() *big.Int {
