@@ -11,17 +11,6 @@ func main() {
 
 	fmt.Println(signature.Verify([]byte(message), keypair.GetPublic()))
 
-	// pair := elgamal.KeyPair{}
-	// pair.GenerateKeyPair()
-
-	// message := "Modern programming langugage are fast"
-
-	// signature := elgamal.Signature{}
-	// signature.Sign([]byte(message), pair.GetPrivate())
-
-	// isSignatureValid := signature.Verify([]byte(message), pair.GetPublic())
-	// fmt.Println(isSignatureValid)
-
 	alice_keyPair := elgamal.KeyPair{}
 	alice_keyPair.GenerateKeyPair()
 
