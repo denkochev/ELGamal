@@ -70,6 +70,10 @@ func (signature *Signature) Verify(m []byte, b *big.Int) bool {
 	s_inverse.ModInverse(s, p_sub_1) // s^(-1)
 	e := Digest(m)                   // H(m)
 
+	// TODO: HERE IS A PROBLEM, GCD OF P-1 AND S OFTEN = 2
+	// ts := big.NewInt(0)
+	// fmt.Println(ts.GCD(nil, nil, s, p_sub_1))
+
 	y := big.NewInt(0)
 	y.ModInverse(b, p) // y = b^(-1) mod p
 
