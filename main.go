@@ -15,6 +15,8 @@ func main() {
 	alice_keyPair.GenerateKeyPair()
 
 	make_cypher := elgamal.Encrypt([]byte(message), alice_keyPair.GetPublic())
-	make_cypher.Decrypt(alice_keyPair.GetPrivate())
+	plain_data := elgamal.Decrypt(make_cypher, alice_keyPair.GetPrivate())
 
+	parseToText := string(plain_data)
+	fmt.Println(parseToText)
 }
