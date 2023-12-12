@@ -10,18 +10,19 @@ type Signature struct {
 }
 
 // temporarly solution for signature
-func UnstableSignature(message string) (Signature, KeyPair) {
-	pair := KeyPair{}
-	signature := Signature{}
+func UnstableSignature(message string) (*Signature, *KeyPair) {
+	pair := GenerateKeyPair()
+	signature := &Signature{big.NewInt(0), big.NewInt(0)}
+	signature.Sign([]byte(message), pair.GetPrivate())
 	for {
-		pair.GenerateKeyPair()
-
-		signature.Sign([]byte(message), pair.GetPrivate())
 
 		isSignatureValid := signature.Verify([]byte(message), pair.GetPublic())
 		if isSignatureValid {
 			break
 		}
+		// generate again if verifying wasn't succesful
+		pair = GenerateKeyPair()
+		signature.Sign([]byte(message), pair.GetPrivate())
 	}
 	return signature, pair
 }
@@ -45,16 +46,6 @@ func (signature *Signature) Sign(m []byte, a *big.Int) {
 	s := big.NewInt(0)
 	s.Mul(sig_part_1, inv_k)   // (H(m) - a*r) * k^(-1)
 	s.Mod(s, Params().p_sub_1) // s = (H(m) - a*r) * k^(-1) mod (p-1)
-
-	// fmt.Println("--------ПЕРЕВІРКА Р ТА С------------------------------------")
-
-	// isrvalid := Params().p_sub_1.Cmp(r) == 1
-	// fmt.Println(isrvalid)
-
-	// issvalid := Params().p_sub_1.Cmp(s) == 1
-	// fmt.Println(issvalid)
-
-	// fmt.Println("=======================================================================")
 
 	signature.R = r
 	signature.S = s
@@ -94,11 +85,6 @@ func (signature *Signature) Verify(m []byte, b *big.Int) bool {
 	v := big.NewInt(0)
 	v.Mul(g_u1, y_u2)
 	v.Mod(v, p) // v = (g^u1 * y^u2) mod p
-
-	// fmt.Println("-----------ПЕРЕВІРКА ПІДПИСУ--------------------------------")
-	// fmt.Println(v)
-	// fmt.Println("-------------------------------------------------------")
-	// fmt.Println(r)
 
 	res := v.Cmp(r) == 0
 	return res
