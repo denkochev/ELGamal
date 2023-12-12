@@ -29,32 +29,15 @@ func Encrypt(m []byte, b *big.Int) []*Cypher {
 		g, p := Params().g, Params().p
 		k := PrivateGenerator()
 
-		m_block := big.NewInt(0)
-		m_block.SetBytes(m)
+		m_block := blocks[i]
 
 		x.Exp(g, k, p)
 		y.Exp(b, k, p)
 		y.Mul(y, m_block)
 		y.Mod(y, p)
 
-		cypherBlock := NewCypher(big.NewInt(0), big.NewInt(0))
-		cypherBlock.x = x
-		cypherBlock.y = y
-
-		cyphers[i] = cypherBlock
+		cyphers[i] = NewCypher(x, y)
 	}
-
-	// x, y := big.NewInt(0), big.NewInt(0)
-	// g, p := Params().g, Params().p
-	// k := PrivateGenerator()
-
-	// m_block := big.NewInt(0)
-	// m_block.SetBytes(m)
-
-	// x.Exp(g, k, p)
-	// y.Exp(b, k, p)
-	// y.Mul(y, m_block)
-	// y.Mod(y, p)
 
 	return cyphers
 }
